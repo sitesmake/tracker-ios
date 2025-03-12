@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TrackersViewController: UIViewController, TrackersViewControllerProtocol, TrackerTypeDelegate, TrackerCollectionViewCellDelegate {
+final class TrackersViewController: UIViewController, TrackersViewControllerProtocol, TrackerTypeDelegate, TrackerCollectionViewCellDelegate, AddHabbitDelegate {
     var presenter: TrackersPresenter?
 
     enum Sizes {
@@ -143,7 +143,19 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
 
     func didSelectType(_ type: TrackerType) {
-        // TODO NewHabitVC()
+        let vc = AddHabbitViewController()
+        let presenter = AddHabbitPresenter(type: type, categories: presenter?.categories ?? [])
+
+        vc.presenter = presenter
+        presenter.view = vc
+
+        presenter.delegate = self
+
+        vc.modalPresentationStyle = .formSheet
+        vc.modalTransitionStyle = .coverVertical
+        vc.isModalInPresentation = true
+        let navigationController = UINavigationController(rootViewController: vc)
+        self.present(navigationController, animated: true)
     }
 
     func didCreateTracker(_ tracker: Tracker, at category: TrackerCategory) {

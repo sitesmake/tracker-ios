@@ -18,8 +18,8 @@ class TrackerCollectionViewCell: UICollectionViewCell {
 
     var tracker: Tracker? {
         didSet {
-            name.text = tracker?.title
-            emoji.text = tracker?.icon
+            title.text = tracker?.title
+            icon.text = tracker?.icon
             rectangleView.backgroundColor = tracker?.color
             counterButton.backgroundColor = tracker?.color
         }
@@ -38,29 +38,28 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         return rectangleView
     }()
 
-    lazy var name: UILabel = {
-        let name = UILabel()
-        name.translatesAutoresizingMaskIntoConstraints = false
-        name.textColor = .white
-        name.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        name.numberOfLines = 0
-        return name
+    lazy var title: UILabel = {
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.textColor = .white
+        title.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        title.numberOfLines = 0
+        return title
     }()
 
-    lazy var emojiBackground: UIView = {
-        let emojiBackground = UIView()
-        emojiBackground.translatesAutoresizingMaskIntoConstraints = false
-        emojiBackground.layer.cornerRadius = 15
-        emojiBackground.backgroundColor = UIColor(white: 1, alpha: 0.3)
-        return emojiBackground
+    lazy var iconBackground: UIView = {
+        let iconBackground = UIView()
+        iconBackground.translatesAutoresizingMaskIntoConstraints = false
+        iconBackground.layer.cornerRadius = 15
+        iconBackground.backgroundColor = UIColor(white: 1, alpha: 0.3)
+        return iconBackground
     }()
 
-    lazy var emoji: UILabel = {
-        let emoji = UILabel()
-        emoji.translatesAutoresizingMaskIntoConstraints = false
-        emoji.font = .systemFont(ofSize: 16)
-
-        return emoji
+    lazy var icon: UILabel = {
+        let icon = UILabel()
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.font = .systemFont(ofSize: 16)
+        return icon
     }()
 
     lazy var days: UILabel = {
@@ -91,9 +90,9 @@ class TrackerCollectionViewCell: UICollectionViewCell {
 
     private func addSubviews() {
         contentView.addSubview(rectangleView)
-        rectangleView.addSubview(name)
-        rectangleView.addSubview(emojiBackground)
-        emojiBackground.addSubview(emoji)
+        rectangleView.addSubview(title)
+        rectangleView.addSubview(iconBackground)
+        iconBackground.addSubview(icon)
         contentView.addSubview(days)
         contentView.addSubview(counterButton)
     }
@@ -105,18 +104,18 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             rectangleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             rectangleView.heightAnchor.constraint(equalToConstant: 90),
 
-            name.topAnchor.constraint(greaterThanOrEqualTo: emojiBackground.bottomAnchor, constant: 4),
-            name.bottomAnchor.constraint(equalTo: rectangleView.bottomAnchor, constant: -12),
-            name.leadingAnchor.constraint(equalTo: rectangleView.leadingAnchor, constant: 12),
-            name.trailingAnchor.constraint(equalTo: rectangleView.trailingAnchor, constant: -12),
+            title.topAnchor.constraint(greaterThanOrEqualTo: iconBackground.bottomAnchor, constant: 4),
+            title.bottomAnchor.constraint(equalTo: rectangleView.bottomAnchor, constant: -12),
+            title.leadingAnchor.constraint(equalTo: rectangleView.leadingAnchor, constant: 12),
+            title.trailingAnchor.constraint(equalTo: rectangleView.trailingAnchor, constant: -12),
 
-            emojiBackground.heightAnchor.constraint(equalToConstant: 30),
-            emojiBackground.widthAnchor.constraint(equalToConstant: 30),
-            emojiBackground.topAnchor.constraint(equalTo: rectangleView.topAnchor, constant: 12),
-            emojiBackground.leadingAnchor.constraint(equalTo: rectangleView.leadingAnchor, constant: 12),
+            iconBackground.heightAnchor.constraint(equalToConstant: 30),
+            iconBackground.widthAnchor.constraint(equalToConstant: 30),
+            iconBackground.topAnchor.constraint(equalTo: rectangleView.topAnchor, constant: 12),
+            iconBackground.leadingAnchor.constraint(equalTo: rectangleView.leadingAnchor, constant: 12),
 
-            emoji.centerXAnchor.constraint(equalTo: emojiBackground.centerXAnchor),
-            emoji.centerYAnchor.constraint(equalTo: emojiBackground.centerYAnchor),
+            icon.centerXAnchor.constraint(equalTo: iconBackground.centerXAnchor),
+            icon.centerYAnchor.constraint(equalTo: iconBackground.centerYAnchor),
 
             days.topAnchor.constraint(equalTo: rectangleView.bottomAnchor, constant: 16),
             days.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
