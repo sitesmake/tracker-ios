@@ -10,26 +10,47 @@ import UIKit
 class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol, TextFieldCellDelegate, TimetableDelegate {
     var presenter: AddHabbitPresenterProtocol?
 
-    enum Constant {
-        static let textFieldCellIdentifier = "TextFieldCell"
-        static let planningCellIdentifier = "PlaningCell"
-        static let iconCellIdentifier = "IconCell"
-        static let colorCellIdentifier = "ColorCell"
-    }
-
     enum Section: Int, CaseIterable {
         case textField
         case planning
-        case icon
-        case color
 
         enum Row {
             case textField
             case category
             case schedule
-            case icon
-            case color
         }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.hideKeyboardOnTap()
+        view.backgroundColor = .ypWhite
+        addSubViews()
+        tableView.register(TextFieldCell.self, forCellReuseIdentifier: "TextFieldCell")
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: "PlanningCell")
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.topItem?.title = "Новая привычка"
+        }
+        cancelButton.setTitle("Отменить", for: .normal)
+        createButton.setTitle("Создать", for: .normal)
+        updateButtonState()
+    }
+
+    private func addSubViews() {
+        view.addSubview(tableView)
+        view.addSubview(buttonsStackView)
+
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: buttonsStackView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            buttonsStackView.heightAnchor.constraint(equalToConstant: 60),
+        ])
     }
 
     private func rowsForSection(_ type: Section) -> [Section.Row] {
@@ -45,10 +66,6 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
             case .none:
                 return []
             }
-        case .icon:
-            return [.icon]
-        case .color:
-            return [.color]
         }
     }
 
@@ -63,18 +80,6 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
         planningTableView.delegate = self
         planningTableView.allowsSelection = true
         return planningTableView
-    }()
-
-    private lazy var iconLabel: UILabel = {
-        let iconLabel = UILabel()
-        view.addSubview(iconLabel)
-        iconLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            iconLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
-            iconLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
-        ])
-        iconLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
-        return iconLabel
     }()
 
     private lazy var cancelButton: UIButton = {
@@ -110,47 +115,6 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
         return buttonsStackView
     }()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupNewHabbitScreen()
-    }
-
-    private func setupNewHabbitScreen() {
-        self.hideKeyboardOnTap()
-        view.backgroundColor = .ypWhite
-        addSubViews()
-        tableView.register(TextFieldCell.self, forCellReuseIdentifier: Constant.textFieldCellIdentifier)
-        tableView.register(TableViewCell.self, forCellReuseIdentifier: Constant.planningCellIdentifier)
-
-        setupNavigationBar()
-
-        cancelButton.setTitle("Отменить", for: .normal)
-        createButton.setTitle("Создать", for: .normal)
-        updateButtonState()
-    }
-
-    private func setupNavigationBar() {
-        if let navigationBar = navigationController?.navigationBar {
-            navigationBar.topItem?.title = "Новая привычка"
-        }
-    }
-
-    private func addSubViews() {
-        view.addSubview(tableView)
-        view.addSubview(buttonsStackView)
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: buttonsStackView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            buttonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            buttonsStackView.heightAnchor.constraint(equalToConstant: 60),
-        ])
-    }
-
     @objc
     private func cancelHabbitCreation() {
         dismiss(animated: true)
@@ -163,7 +127,7 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
     }
 
     private func textFieldCell(at indexPath: IndexPath, placeholder: String) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.textFieldCellIdentifier) as? TextFieldCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldCell") as? TextFieldCell else {
             return UITableViewCell()
         }
         cell.placeholder = placeholder
@@ -172,20 +136,10 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
     }
 
     private func planningCell(at indexPath: IndexPath, title: String, subtitle: String?) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.planningCellIdentifier) as? TableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "PlanningCell") as? TableViewCell else { return UITableViewCell() }
         cell.textLabel?.text = title
         cell.detailTextLabel?.text = subtitle
         cell.accessoryType = .disclosureIndicator
-        return cell
-    }
-
-    private func iconCell(at indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.iconCellIdentifier) else { return UITableViewCell() }
-        return cell
-    }
-
-    private func colorCell(at indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.colorCellIdentifier) else { return UITableViewCell() }
         return cell
     }
 
@@ -202,7 +156,6 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
     }
 
     private func showCategory() {
-
     }
 
     private func updateButtonState() {
@@ -210,28 +163,22 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
         createButton.backgroundColor = createButton.isEnabled ? .ypBlack : .ypGray
     }
 
-    // MARK: - TimetableDelegate
-
     func didSelect(weekdays: [Int]) {
         presenter?.schedule = weekdays
         updateButtonState()
         tableView.reloadData()
     }
 
-    // MARK: - TextFieldCellDelegate
-
     func didTextChange(text: String?) {
         presenter?.trackerTitle = text
         updateButtonState()
     }
-
 }
 
 extension AddHabbitViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        Section.allCases.count - 2
-        // спрятал ненужные для 14 спринта секции
+        Section.allCases.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -249,16 +196,11 @@ extension AddHabbitViewController: UITableViewDataSource {
             return planningCell(at: indexPath, title: "Категория", subtitle: presenter?.selectedCategory?.title)
         case .schedule:
             return planningCell(at: indexPath, title: "Расписание", subtitle: presenter?.schedule.map{ DaysFormatter.shortWeekday(at: $0)}.joined(separator: ", "))
-        case .icon:
-            return iconCell(at: indexPath)
-        case .color:
-            return colorCell(at: indexPath)
         }
     }
 }
 
 extension AddHabbitViewController: UITableViewDelegate {
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let section = Section(rawValue: indexPath.section) else { return }
         switch rowsForSection(section)[indexPath.row] {
