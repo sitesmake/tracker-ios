@@ -10,7 +10,7 @@ import UIKit
 final class StatisticsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         emptyScreenImage.image = UIImage(named: "emptyStatistics")
         emptyScreenText.text = "Анализировать пока нечего"
         view.backgroundColor = .ypWhite
@@ -20,7 +20,7 @@ final class StatisticsViewController: UIViewController {
             navigationBar.topItem?.largeTitleDisplayMode = .always
         }
     }
-
+    
     private lazy var emptyScreenImage: UIImageView = {
         let emptyScreenImage = UIImageView()
         view.addSubview(emptyScreenImage)
@@ -31,7 +31,7 @@ final class StatisticsViewController: UIViewController {
         ])
         return emptyScreenImage
     }()
-
+    
     private lazy var emptyScreenText: UILabel = {
         let emptyScreenText = UILabel()
         view.addSubview(emptyScreenText)

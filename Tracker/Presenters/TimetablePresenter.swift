@@ -12,7 +12,7 @@ final class TimetablePresenter: TimetablePresenterProtocol {
     var delegate: TimetableDelegate
     var selectedWeekdays: [Int]
     let weekdays = DaysFormatter.weekdays
-
+    
     init(view: TimetableViewControllerProtocol, selected: [Int], delegate: TimetableDelegate) {
         self.view = view
         self.delegate = delegate

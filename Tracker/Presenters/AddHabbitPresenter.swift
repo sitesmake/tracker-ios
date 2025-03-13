@@ -19,13 +19,13 @@ final class AddHabitPresenter: AddHabitPresenterProtocol {
     var isValidForm: Bool {
         selectedCategory != nil && trackerTitle != nil && !schedule.isEmpty
     }
-
+    
     init(type: TrackerType, categories: [TrackerCategory]) {
         self.type = type
         self.selectedCategory = categories.first
         self.categories = categories
     }
-
+    
     func createNewTracker() {
         guard let title = trackerTitle,
               let selectedCategory

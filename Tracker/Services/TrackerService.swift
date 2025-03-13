@@ -11,13 +11,13 @@ final class TrackerService: TrackerServiceProtocol {
     var categories: [TrackerCategory] = []
     var visibleCategories: [TrackerCategory] = []
     var completedTrackers: Set<TrackerRecord> = []
-
+    
     init() {
         let tracker = Tracker(id: UUID(), title: "Демо трекер 1", color: .ypColor1, icon: "🌺", schedule: [2])
         let category = TrackerCategory(title: "Демо категория 1", trackers: [tracker])
         categories.append(category)
     }
-
+    
     func addTracker(_ tracker: Tracker, at category: TrackerCategory) {
         var trackers = category.trackers
         trackers.append(tracker)
@@ -30,7 +30,7 @@ final class TrackerService: TrackerServiceProtocol {
         }
         self.categories = categories
     }
-
+    
     func getCategoriesFor(date: Date, search: String) -> [TrackerCategory] {
         let weekday = Calendar.current.component(.weekday, from: date) - 1
         
@@ -46,15 +46,15 @@ final class TrackerService: TrackerServiceProtocol {
         
         return result
     }
-
+    
     func addToCompletedTrackers(tracker: Tracker, date: Date) {
         var completedTrackers = self.completedTrackers
         let trackerToRecord = TrackerRecord(id: tracker.id, date: date)
         completedTrackers.insert(trackerToRecord)
         self.completedTrackers = completedTrackers
-
+        
     }
-
+    
     func removeFromCompletedTrackers(tracker: Tracker, date: Date) {
         var completedTrackers = self.completedTrackers
         let trackerToRemove = TrackerRecord(id: tracker.id, date: date)

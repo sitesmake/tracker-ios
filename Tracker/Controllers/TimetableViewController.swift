@@ -9,10 +9,10 @@ import UIKit
 
 final class TimetableViewController: UIViewController, TimetableViewControllerProtocol {
     var presenter: TimetablePresenterProtocol?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         if let navigationBar = navigationController?.navigationBar {
             navigationBar.topItem?.title = "Новая привычка"
         }
@@ -20,7 +20,7 @@ final class TimetableViewController: UIViewController, TimetableViewControllerPr
         addSubViews()
         readyButton.setTitle("Готово", for: .normal)
     }
-
+    
     private func addSubViews() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +31,7 @@ final class TimetableViewController: UIViewController, TimetableViewControllerPr
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
-
+    
     private lazy var tableView: UITableView = {
         var timetable = UITableView(frame: .zero, style: .insetGrouped)
         timetable.separatorStyle = .singleLine
@@ -45,7 +45,7 @@ final class TimetableViewController: UIViewController, TimetableViewControllerPr
         timetable.register(TableViewCell.self, forCellReuseIdentifier: "TimetableCell")
         return timetable
     }()
-
+    
     private lazy var readyButton: UIButton = {
         let readyButton = UIButton()
         view.addSubview(readyButton)
@@ -56,7 +56,7 @@ final class TimetableViewController: UIViewController, TimetableViewControllerPr
             readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             readyButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             readyButton.heightAnchor.constraint(equalToConstant: 60)
-
+            
         ])
         readyButton.layer.cornerRadius = 16
         readyButton.backgroundColor = .ypBlack
@@ -65,17 +65,17 @@ final class TimetableViewController: UIViewController, TimetableViewControllerPr
         readyButton.addTarget(self, action: #selector(setTimetable), for: .touchUpInside)
         return readyButton
     }()
-
+    
     @objc
     private func setTimetable() {
         dismiss(animated: true)
         presenter?.done()
     }
-
+    
     @objc
     private func didChangeSwitch(_ sender: UISwitch) {
         guard var presenter else { return }
-
+        
         if sender.isOn {
             presenter.selectedWeekdays.append(sender.tag)
         } else if let index = presenter.selectedWeekdays.firstIndex(of: sender.tag) {
@@ -88,25 +88,25 @@ extension TimetableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         presenter?.weekdays.count ?? 0
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TimetableCell") as? TableViewCell,
               let presenter
         else { return UITableViewCell() }
-
+        
         let day = presenter.weekdays[indexPath.row]
-
+        
         cell.accessoryType = .disclosureIndicator
         cell.backgroundColor = .ypBackground
         cell.textLabel?.text = day.capitalized
-
+        
         let weekdaySwitch = UISwitch()
         weekdaySwitch.isOn = presenter.selectedWeekdays.contains(indexPath.row)
         cell.accessoryView = weekdaySwitch
         weekdaySwitch.onTintColor = .ypBlue
         weekdaySwitch.tag = indexPath.row
         weekdaySwitch.addTarget(self, action: #selector(didChangeSwitch), for: .touchUpInside)
-
+        
         return cell
     }
 }

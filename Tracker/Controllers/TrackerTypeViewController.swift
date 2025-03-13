@@ -12,7 +12,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         if let navigationBar = navigationController?.navigationBar {
             navigationBar.topItem?.title = "Создание трекера"
         }
@@ -21,7 +21,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
         addHabitButton.setTitle("Привычка", for: .normal)
         addUnregularEventButton.setTitle("Нерегулярное событие", for: .normal)
     }
-
+    
     private lazy var addHabitButton: UIButton = {
         let addHabitButton = UIButton()
         addHabitButton.layer.cornerRadius = 16
@@ -31,7 +31,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
         addHabitButton.addTarget(self, action: #selector(pushAddHabitViewController), for: .touchUpInside)
         return addHabitButton
     }()
-
+    
     private lazy var addUnregularEventButton: UIButton = {
         let addUnregularEventButton = UIButton()
         addUnregularEventButton.layer.cornerRadius = 16
@@ -41,7 +41,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
         addUnregularEventButton.addTarget(self, action: #selector(pushUnregularEventViewController), for: .touchUpInside)
         return addUnregularEventButton
     }()
-
+    
     private lazy var buttonsStackView: UIStackView = {
         let buttonsStackView = UIStackView()
         buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -52,7 +52,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
         buttonsStackView.distribution = .fillEqually
         return buttonsStackView
     }()
-
+    
     private func addSubViews() {
         view.addSubview(addHabitButton)
         view.addSubview(addUnregularEventButton)
@@ -64,14 +64,14 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
             buttonsStackView.heightAnchor.constraint(equalToConstant: 136)
         ])
     }
-
+    
     @objc
     private func pushAddHabitViewController(sender: UIButton) {
         dismiss(animated: true) {
             self.presenter?.selectType(.Habit)
         }
     }
-
+    
     @objc
     private func pushUnregularEventViewController(sender: UIButton) {
         dismiss(animated: true) {
