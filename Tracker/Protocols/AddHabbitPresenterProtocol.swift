@@ -1,12 +1,12 @@
 //
-//  AddHabbitPresenterProtocol.swift
+//  AddHabitPresenterProtocol.swift
 //  Tracker
 //
 //  Created by alexander on 12.03.2025.
 //
 
-protocol AddHabbitPresenterProtocol {
-    var view: AddHabbitViewControllerProtocol? { get }
+protocol AddHabitPresenterProtocol {
+    var view: AddHabitViewControllerProtocol? { get }
     var trackerTitle: String? { get set }
     var subtitleForCategory: String { get set }
     var type: TrackerType { get set }

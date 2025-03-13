@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TrackersViewController: UIViewController, TrackersViewControllerProtocol, TrackerTypeDelegate, TrackerCollectionViewCellDelegate, AddHabbitDelegate {
+final class TrackersViewController: UIViewController, TrackersViewControllerProtocol, TrackerTypeDelegate, TrackerCollectionViewCellDelegate, AddHabitDelegate {
     var presenter: TrackersPresenter?
 
     enum Sizes {
@@ -143,8 +143,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
 
     func didSelectType(_ type: TrackerType) {
-        let vc = AddHabbitViewController()
-        let presenter = AddHabbitPresenter(type: type, categories: presenter?.categories ?? [])
+        let vc = AddHabitViewController()
+        let presenter = AddHabitPresenter(type: type, categories: presenter?.categories ?? [])
 
         vc.presenter = presenter
         presenter.view = vc

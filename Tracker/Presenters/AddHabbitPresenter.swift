@@ -1,5 +1,5 @@
 //
-//  AddHabbitPresenter.swift
+//  AddHabitPresenter.swift
 //  Tracker
 //
 //  Created by alexander on 12.03.2025.
@@ -7,13 +7,13 @@
 
 import UIKit
 
-final class AddHabbitPresenter: AddHabbitPresenterProtocol {
-    var delegate: AddHabbitDelegate?
+final class AddHabitPresenter: AddHabitPresenterProtocol {
+    var delegate: AddHabitDelegate?
     var trackerTitle: String?
     var subtitleForCategory: String = ""
     var categories: [TrackerCategory]
     var selectedCategory: TrackerCategory?
-    var view: AddHabbitViewControllerProtocol?
+    var view: AddHabitViewControllerProtocol?
     var type: TrackerType
     var schedule: [Int] = []
     var isValidForm: Bool {

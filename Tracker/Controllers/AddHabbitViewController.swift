@@ -1,5 +1,5 @@
 //
-//  AddHabbitViewController.swift
+//  AddHabitViewController.swift
 //  Tracker
 //
 //  Created by alexander on 12.03.2025.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol, TextFieldCellDelegate, TimetableDelegate {
-    var presenter: AddHabbitPresenterProtocol?
+class AddHabitViewController: UIViewController, AddHabitViewControllerProtocol, TextFieldCellDelegate, TimetableDelegate {
+    var presenter: AddHabitPresenterProtocol?
 
     enum Section: Int, CaseIterable {
         case textField
@@ -59,7 +59,7 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
             return [.textField]
         case .planning:
             switch presenter?.type {
-            case .Habbit:
+            case .Habit:
                 return [.category, .schedule]
             case .UnregularEvent:
                 return [.category]
@@ -90,7 +90,7 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
         cancelButton.backgroundColor = .ypWhite
         cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         cancelButton.setTitleColor(.ypRed, for: .normal)
-        cancelButton.addTarget(self, action: #selector(cancelHabbitCreation), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelHabitCreation), for: .touchUpInside)
         return cancelButton
     }()
 
@@ -100,7 +100,7 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
         createButton.backgroundColor = .ypBlack
         createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         createButton.setTitleColor(.ypWhite, for: .normal)
-        createButton.addTarget(self, action: #selector(createHabbit), for: .touchUpInside)
+        createButton.addTarget(self, action: #selector(createHabit), for: .touchUpInside)
         return createButton
     }()
 
@@ -116,12 +116,12 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
     }()
 
     @objc
-    private func cancelHabbitCreation() {
+    private func cancelHabitCreation() {
         dismiss(animated: true)
     }
 
     @objc
-    private func createHabbit() {
+    private func createHabit() {
         presenter?.createNewTracker()
         dismiss(animated: true)
     }
@@ -175,7 +175,7 @@ class AddHabbitViewController: UIViewController, AddHabbitViewControllerProtocol
     }
 }
 
-extension AddHabbitViewController: UITableViewDataSource {
+extension AddHabitViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         Section.allCases.count
@@ -200,7 +200,7 @@ extension AddHabbitViewController: UITableViewDataSource {
     }
 }
 
-extension AddHabbitViewController: UITableViewDelegate {
+extension AddHabitViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let section = Section(rawValue: indexPath.section) else { return }
         switch rowsForSection(section)[indexPath.row] {

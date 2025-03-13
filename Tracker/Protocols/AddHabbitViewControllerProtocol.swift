@@ -1,10 +1,10 @@
 //
-//  AddHabbitViewControllerProtocol.swift
+//  AddHabitViewControllerProtocol.swift
 //  Tracker
 //
 //  Created by alexander on 12.03.2025.
 //
 
-protocol AddHabbitViewControllerProtocol: AnyObject {
-    var presenter: AddHabbitPresenterProtocol? { get }
+protocol AddHabitViewControllerProtocol: AnyObject {
+    var presenter: AddHabitPresenterProtocol? { get }
 }
