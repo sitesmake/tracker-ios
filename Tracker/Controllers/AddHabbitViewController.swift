@@ -59,9 +59,9 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
             return [.textField]
         case .planning:
             switch presenter?.type {
-            case .Habit:
+            case .habit:
                 return [.category, .schedule]
-            case .UnregularEvent:
+            case .irregularEvent:
                 return [.category]
             case .none:
                 return []

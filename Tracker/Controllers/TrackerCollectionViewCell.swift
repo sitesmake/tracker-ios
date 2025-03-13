@@ -144,12 +144,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         case true:
             counterButton.setImage(UIImage(named: "Check"), for: .normal)
             counterButton.alpha = 0.3
-            counterButton.imageView?.tintColor = .ypWhite
         case false:
             counterButton.setImage(UIImage(systemName: "plus"), for: .normal)
             counterButton.alpha = 1
-            counterButton.imageView?.tintColor = .ypWhite
         }
+        counterButton.imageView?.tintColor = .ypWhite
     }
     
     private func updateCounterLabel() {

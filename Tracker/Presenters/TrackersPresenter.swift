@@ -33,9 +33,9 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     
     func completeTracker(_ complete: Bool, tracker: Tracker) {
         if complete {
-            service.addToCompletedTrackers(tracker: tracker, date: currentDate)
+            service.changeCompletedTrackers(tracker: tracker, date: currentDate, complete: complete)
         } else {
-            service.removeFromCompletedTrackers(tracker: tracker, date: currentDate)
+            service.changeCompletedTrackers(tracker: tracker, date: currentDate, complete: complete)
         }
     }
     
@@ -44,6 +44,6 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     }
     
     func countRecordsTracker(_ tracker: Tracker) -> Int {
-        service.completedTrackers.filter({ $0.id == tracker.id }).count
+        service.completedTrackers.filter { $0.id == tracker.id }.count
     }
 }

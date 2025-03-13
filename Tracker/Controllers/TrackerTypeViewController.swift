@@ -19,7 +19,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
         view.backgroundColor = .ypWhite
         addSubViews()
         addHabitButton.setTitle("Привычка", for: .normal)
-        addUnregularEventButton.setTitle("Нерегулярное событие", for: .normal)
+        addIrregularEventButton.setTitle("Нерегулярное событие", for: .normal)
     }
     
     private lazy var addHabitButton: UIButton = {
@@ -32,21 +32,21 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
         return addHabitButton
     }()
     
-    private lazy var addUnregularEventButton: UIButton = {
-        let addUnregularEventButton = UIButton()
-        addUnregularEventButton.layer.cornerRadius = 16
-        addUnregularEventButton.backgroundColor = .ypBlack
-        addUnregularEventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        addUnregularEventButton.setTitleColor(.ypWhite, for: .normal)
-        addUnregularEventButton.addTarget(self, action: #selector(pushUnregularEventViewController), for: .touchUpInside)
-        return addUnregularEventButton
+    private lazy var addIrregularEventButton: UIButton = {
+        let addIrregularEventButton = UIButton()
+        addIrregularEventButton.layer.cornerRadius = 16
+        addIrregularEventButton.backgroundColor = .ypBlack
+        addIrregularEventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        addIrregularEventButton.setTitleColor(.ypWhite, for: .normal)
+        addIrregularEventButton.addTarget(self, action: #selector(pushIrregularEventViewController), for: .touchUpInside)
+        return addIrregularEventButton
     }()
     
     private lazy var buttonsStackView: UIStackView = {
         let buttonsStackView = UIStackView()
         buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
         buttonsStackView.addArrangedSubview(addHabitButton)
-        buttonsStackView.addArrangedSubview(addUnregularEventButton)
+        buttonsStackView.addArrangedSubview(addIrregularEventButton)
         buttonsStackView.axis = .vertical
         buttonsStackView.spacing = 16
         buttonsStackView.distribution = .fillEqually
@@ -55,7 +55,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
     
     private func addSubViews() {
         view.addSubview(addHabitButton)
-        view.addSubview(addUnregularEventButton)
+        view.addSubview(addIrregularEventButton)
         view.addSubview(buttonsStackView)
         NSLayoutConstraint.activate([
             buttonsStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -68,14 +68,14 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
     @objc
     private func pushAddHabitViewController(sender: UIButton) {
         dismiss(animated: true) {
-            self.presenter?.selectType(.Habit)
+            self.presenter?.selectType(.habit)
         }
     }
     
     @objc
-    private func pushUnregularEventViewController(sender: UIButton) {
+    private func pushIrregularEventViewController(sender: UIButton) {
         dismiss(animated: true) {
-            self.presenter?.selectType(.UnregularEvent)
+            self.presenter?.selectType(.irregularEvent)
         }
     }
 }

@@ -47,18 +47,15 @@ final class TrackerService: TrackerServiceProtocol {
         return result
     }
     
-    func addToCompletedTrackers(tracker: Tracker, date: Date) {
+    func changeCompletedTrackers(tracker: Tracker, date: Date, complete: Bool) {
         var completedTrackers = self.completedTrackers
-        let trackerToRecord = TrackerRecord(id: tracker.id, date: date)
-        completedTrackers.insert(trackerToRecord)
-        self.completedTrackers = completedTrackers
-        
-    }
-    
-    func removeFromCompletedTrackers(tracker: Tracker, date: Date) {
-        var completedTrackers = self.completedTrackers
-        let trackerToRemove = TrackerRecord(id: tracker.id, date: date)
-        completedTrackers.remove(trackerToRemove)
+        if complete {
+            let trackerToRecord = TrackerRecord(id: tracker.id, date: date)
+            completedTrackers.insert(trackerToRecord)
+        } else {
+            let trackerToRemove = TrackerRecord(id: tracker.id, date: date)
+            completedTrackers.remove(trackerToRemove)
+        }
         self.completedTrackers = completedTrackers
     }
 }
