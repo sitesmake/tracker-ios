@@ -13,7 +13,7 @@ final class TrackerService: TrackerServiceProtocol {
     var completedTrackers: Set<TrackerRecord> = []
     
     init() {
-        let tracker = Tracker(id: UUID(), title: "Демо трекер 1", color: .ypColor1, icon: "🌺", schedule: [2])
+        let tracker = Tracker(id: UUID(), title: "Демо трекер 1", color: .ypColor1, icon: "🌺", schedule: [0,1,2,3,4,5,6])
         let category = TrackerCategory(title: "Демо категория 1", trackers: [tracker])
         categories.append(category)
     }
