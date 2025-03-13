@@ -24,7 +24,7 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.hideKeyboardOnTap()
+        hideKeyboardOnTap()
         view.backgroundColor = .ypWhite
         addSubViews()
         tableView.register(TextFieldCell.self, forCellReuseIdentifier: "TextFieldCell")

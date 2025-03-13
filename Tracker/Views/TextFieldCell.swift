@@ -66,7 +66,7 @@ extension TextFieldCell: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.endEditing(true)
+        endEditing(true)
         return true
     }
     
