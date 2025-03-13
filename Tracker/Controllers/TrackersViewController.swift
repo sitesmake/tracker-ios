@@ -163,7 +163,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         trackersCollectionView.reloadData()
     }
     
-    func didComlete(_ complete: Bool, tracker: Tracker) {
+    func didComplete(_ complete: Bool, tracker: Tracker) {
         presenter?.completeTracker(complete, tracker: tracker)
     }
 }
@@ -188,7 +188,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         cell.tracker = tracker
         cell.delegate = self
-        cell.comletedTracker = presenter.isCompletedTracker(tracker)
+        cell.completedTracker = presenter.isCompletedTracker(tracker)
         cell.daysCounter = presenter.countRecordsTracker(tracker)
         return cell
     }

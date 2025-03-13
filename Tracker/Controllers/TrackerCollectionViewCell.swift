@@ -25,9 +25,9 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    var comletedTracker: Bool = false {
+    var completedTracker: Bool = false {
         didSet {
-            upadateButtonState()
+            updateButtonState()
         }
     }
     
@@ -81,7 +81,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         addSubviews()
         constraintSubviews()
-        upadateButtonState()
+        updateButtonState()
     }
     
     required init?(coder: NSCoder) {
@@ -129,18 +129,18 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     @objc
     private func checkForToday() {
-        if comletedTracker {
+        if completedTracker {
             daysCounter -= 1
         } else {
             daysCounter += 1
         }
-        comletedTracker = !comletedTracker
+        completedTracker = !completedTracker
         guard let tracker else { return }
-        delegate?.didComlete(comletedTracker, tracker: tracker)
+        delegate?.didComplete(completedTracker, tracker: tracker)
     }
     
-    private func upadateButtonState() {
-        switch comletedTracker {
+    private func updateButtonState() {
+        switch completedTracker {
         case true:
             counterButton.setImage(UIImage(named: "Check"), for: .normal)
             counterButton.alpha = 0.3
