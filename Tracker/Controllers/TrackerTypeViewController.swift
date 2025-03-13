@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TrackerTypeViewController: UIViewController, TrackerTypeViewControllerProtocol {
+final class TrackerTypeViewController: UIViewController, TrackerTypeViewControllerProtocol {
     var presenter: TrackerTypePresenterProtocol?
     
     override func viewDidLoad() {

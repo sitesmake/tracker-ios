@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TrackerCollectionViewCell: UICollectionViewCell {
+final class TrackerCollectionViewCell: UICollectionViewCell {
     var delegate: TrackerCollectionViewCellDelegate?
 
     var daysCounter: Int = 0 {

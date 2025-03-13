@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TrackerTypePresenter: TrackerTypePresenterProtocol {
+final class TrackerTypePresenter: TrackerTypePresenterProtocol {
     var view: TrackerTypeViewControllerProtocol?
     var delegate: TrackerTypeDelegate?
     

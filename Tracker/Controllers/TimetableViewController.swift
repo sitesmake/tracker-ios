@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TimetableViewController: UIViewController, TimetableViewControllerProtocol {
+final class TimetableViewController: UIViewController, TimetableViewControllerProtocol {
     var presenter: TimetablePresenterProtocol?
 
     override func viewDidLoad() {

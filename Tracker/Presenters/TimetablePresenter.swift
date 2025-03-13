@@ -7,7 +7,7 @@
 
 import Foundation
 
-class TimetablePresenter: TimetablePresenterProtocol {
+final class TimetablePresenter: TimetablePresenterProtocol {
     var view: TimetableViewControllerProtocol
     var delegate: TimetableDelegate
     var selectedWeekdays: [Int]

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddHabitViewController: UIViewController, AddHabitViewControllerProtocol, TextFieldCellDelegate, TimetableDelegate {
+final class AddHabitViewController: UIViewController, AddHabitViewControllerProtocol, TextFieldCellDelegate, TimetableDelegate {
     var presenter: AddHabitPresenterProtocol?
 
     enum Section: Int, CaseIterable {

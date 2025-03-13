@@ -11,7 +11,7 @@ protocol TextFieldCellDelegate {
     func didTextChange(text: String?)
 }
 
-class TextFieldCell: UITableViewCell {
+final class TextFieldCell: UITableViewCell {
     
     var delegate: TextFieldCellDelegate?
     
