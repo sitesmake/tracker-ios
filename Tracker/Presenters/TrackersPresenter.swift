@@ -16,7 +16,7 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     private let service = TrackerService()
     weak var view: TrackersViewControllerProtocol?
     var categories: [TrackerCategory] = []
-    var currentDate: Date = Date() {
+    var currentDate: Date = Calendar.current.startOfDay(for: Date()) {
         didSet {
             setupCategories()
         }
@@ -45,5 +45,9 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     
     func countRecordsTracker(_ tracker: Tracker) -> Int {
         service.completedTrackers.filter { $0.id == tracker.id }.count
+    }
+
+    func canBeChanged() -> Bool {
+        currentDate <= Calendar.current.startOfDay(for: Date())
     }
 }

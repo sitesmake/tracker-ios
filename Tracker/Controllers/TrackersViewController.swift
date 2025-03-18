@@ -138,7 +138,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     
     @objc
     private func setDateForTrackers(_ sender: UIDatePicker) {
-        presenter?.currentDate = sender.date
+        presenter?.currentDate = Calendar.current.startOfDay(for: sender.date)
         trackersCollectionView.reloadData()
     }
     
@@ -190,6 +190,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.delegate = self
         cell.completedTracker = presenter.isCompletedTracker(tracker)
         cell.daysCounter = presenter.countRecordsTracker(tracker)
+        cell.canBeChanged = presenter.canBeChanged()
         return cell
     }
 }

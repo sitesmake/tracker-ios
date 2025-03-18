@@ -30,7 +30,9 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             updateButtonState()
         }
     }
-    
+
+    var canBeChanged: Bool = false
+
     lazy var rectangleView: UIView = {
         let rectangleView = UIView()
         rectangleView.translatesAutoresizingMaskIntoConstraints = false
@@ -129,6 +131,9 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     @objc
     private func checkForToday() {
+        if (canBeChanged == false) {
+            return
+        }
         if completedTracker {
             daysCounter -= 1
         } else {
