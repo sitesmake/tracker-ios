@@ -46,7 +46,7 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     func countRecordsTracker(_ tracker: Tracker) -> Int {
         service.completedTrackers.filter { $0.id == tracker.id }.count
     }
-
+    
     func canBeChanged() -> Bool {
         currentDate <= Calendar.current.startOfDay(for: Date())
     }

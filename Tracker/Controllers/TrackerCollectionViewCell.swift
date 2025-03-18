@@ -30,9 +30,9 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             updateButtonState()
         }
     }
-
+    
     var canBeChanged: Bool = false
-
+    
     lazy var rectangleView: UIView = {
         let rectangleView = UIView()
         rectangleView.translatesAutoresizingMaskIntoConstraints = false

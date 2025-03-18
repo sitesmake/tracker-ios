@@ -23,15 +23,15 @@ final class AddHabitPresenter: AddHabitPresenterProtocol {
         case .irregularEvent:
             return selectedCategory != nil && trackerTitle != nil
         }
-
+        
     }
-
+    
     init(type: TrackerType, categories: [TrackerCategory]) {
         self.type = type
         self.selectedCategory = categories.first
         self.categories = categories
     }
-
+    
     func createNewTracker() {
         guard let title = trackerTitle,
               let selectedCategory
