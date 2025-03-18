@@ -17,15 +17,21 @@ final class AddHabitPresenter: AddHabitPresenterProtocol {
     var type: TrackerType
     var schedule: [Int] = []
     var isValidForm: Bool {
-        selectedCategory != nil && trackerTitle != nil && !schedule.isEmpty
+        switch type {
+        case .habit:
+            return selectedCategory != nil && trackerTitle != nil && !schedule.isEmpty
+        case .irregularEvent:
+            return selectedCategory != nil && trackerTitle != nil
+        }
+
     }
-    
+
     init(type: TrackerType, categories: [TrackerCategory]) {
         self.type = type
         self.selectedCategory = categories.first
         self.categories = categories
     }
-    
+
     func createNewTracker() {
         guard let title = trackerTitle,
               let selectedCategory

@@ -37,7 +37,7 @@ final class TrackerService: TrackerServiceProtocol {
         var result: [TrackerCategory] = []
         
         for category in categories {
-            let trackers = search.isEmpty ? category.trackers.filter({ $0.schedule.contains(weekday) }) : category.trackers.filter({ $0.schedule.contains(weekday) && $0.title.contains(search) })
+            let trackers = search.isEmpty ? category.trackers.filter({ $0.schedule.contains(weekday) || ($0.schedule == [] && date == Calendar.current.startOfDay(for: Date())) }) : category.trackers.filter({ ($0.schedule.contains(weekday) || ($0.schedule == [] && date == Calendar.current.startOfDay(for: Date()))) && $0.title.contains(search) })
             if !trackers.isEmpty {
                 let newCategory = TrackerCategory(title: category.title, trackers: trackers)
                 result.append(newCategory)
