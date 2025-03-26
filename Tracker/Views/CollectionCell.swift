@@ -130,7 +130,7 @@ extension CollectionCell: UICollectionViewDelegate {
         switch type {
             
         case .icon:
-            view.title.text = "Icon"
+            view.title.text = "Emoji"
         case .color:
             view.title.text = "Цвет"
         }
