@@ -6,56 +6,161 @@
 //
 
 import Foundation
+import CoreData
 
-final class TrackerService: TrackerServiceProtocol {
-    var categories: [TrackerCategory] = []
-    var visibleCategories: [TrackerCategory] = []
-    var completedTrackers: Set<TrackerRecord> = []
-
-    init() {
-        let tracker = Tracker(id: UUID(), title: "Демо трекер 1", color: .ypColor1, icon: "🌺", schedule: [0,1,2,3,4,5,6])
-        let category = TrackerCategory(title: "Демо категория 1", trackers: [tracker])
-        categories.append(category)
-    }
-
-    func addTracker(_ tracker: Tracker, at category: TrackerCategory) {
-        var trackers = category.trackers
-        trackers.append(tracker)
-        let newCategory = TrackerCategory(title: category.title, trackers: trackers)
-        var categories = self.categories
-        if let index = categories.firstIndex(where: { $0.title == category.title } ) {
-            categories[index] = newCategory
-        } else {
-            categories.append(newCategory)
-        }
-        self.categories = categories
-    }
-
-    func getCategoriesFor(date: Date, search: String) -> [TrackerCategory] {
-        let weekday = Calendar.current.component(.weekday, from: date) - 1
-
-        var result: [TrackerCategory] = []
-
-        for category in categories {
-            let trackers = search.isEmpty ? category.trackers.filter({ $0.schedule.contains(weekday) || ($0.schedule == [] && date == Calendar.current.startOfDay(for: Date())) }) : category.trackers.filter({ ($0.schedule.contains(weekday) || ($0.schedule == [] && date == Calendar.current.startOfDay(for: Date()))) && $0.title.contains(search) })
-            if !trackers.isEmpty {
-                let newCategory = TrackerCategory(title: category.title, trackers: trackers)
-                result.append(newCategory)
+final class TrackerService: NSObject {
+    weak var delegate: TrackerServiceDelegate?
+    
+    private var trackerStore: TrackerStore?
+    private var trackerCategoryStore: TrackerCategoryStore?
+    private var trackerRecordStore: TrackerRecordStore?
+    
+    private var insertedIndexes: IndexSet?
+    private var deletedIndexes: IndexSet?
+    
+    private lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "Model")
+        container.loadPersistentStores { (storeDescription, error) in
+            if let error = error as NSError? {
+                print("Error in IconMixCoreData")
             }
         }
-
-        return result
+        return container
+    }()
+    
+    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
+        let fetchRequest = TrackerCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerCategoryCoreData.name, ascending: true)
+        ]
+        
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: persistentContainer.viewContext, sectionNameKeyPath: "category.name", cacheName: nil)
+        controller.delegate = self
+        try? controller.performFetch()
+        return controller
+    }()
+    
+    override init() {
+        super.init()
+        self.trackerStore = TrackerStore(context: persistentContainer.viewContext)
+        self.trackerCategoryStore = TrackerCategoryStore(context: persistentContainer.viewContext)
+        self.trackerRecordStore = TrackerRecordStore(context: persistentContainer.viewContext)
+        addTestCategory()
     }
-
-    func changeCompletedTrackers(tracker: Tracker, date: Date, complete: Bool) {
-        var completedTrackers = self.completedTrackers
-        if complete {
-            let trackerToRecord = TrackerRecord(id: tracker.id, date: date)
-            completedTrackers.insert(trackerToRecord)
+    
+    func updatePredicate(search: String, date: Date) {
+        let weekday = String(date.weekdayIndex)
+        let namePredicate = NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(TrackerCoreData.name), search)
+        let datePredicate = NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(TrackerCoreData.schedule), weekday)
+        
+        if date.onlyDate == Date().onlyDate {
+            if search.count != 0 {
+                fetchedResultsController.fetchRequest.predicate = namePredicate
+            } else {
+                fetchedResultsController.fetchRequest.predicate = NSPredicate(value: true)
+            }
         } else {
-            let trackerToRemove = TrackerRecord(id: tracker.id, date: date)
-            completedTrackers.remove(trackerToRemove)
+            if search.count != 0 {
+                fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(type: .and, subpredicates: [namePredicate, datePredicate])
+            } else {
+                fetchedResultsController.fetchRequest.predicate = datePredicate
+            }
         }
-        self.completedTrackers = completedTrackers
+        try? fetchedResultsController.performFetch()
+    }
+    
+    func getAllCategories() -> [String] {
+        trackerCategoryStore?.getCategoryNames() ?? []
+    }
+    
+    func getTrackerRecord(tracker: Tracker, date: Date) -> TrackerRecord? {
+        trackerRecordStore?.getTrackerRecordFromCoreData(tracker: tracker, date: date)
+    }
+    
+    func getTrackersNumber(tracker: Tracker) -> Int {
+        trackerRecordStore?.getTrackerRecordsNumber(tracker: tracker) ?? 0
+    }
+    
+    func addToCompletedTrackers(tracker: Tracker, date: Date) throws {
+        try trackerRecordStore?.addNewTrackerRecord(tracker, date: date)
+    }
+    
+    func removeFromCompletedTrackers(tracker: Tracker, date: Date) throws {
+        try trackerRecordStore?.deleteTrackerRecord(tracker, date: date)
+    }
+    
+    private func addTestCategory() {
+        if fetchedResultsController.sections?.count ?? 0 == 0 {
+            do {
+                try trackerCategoryStore?.addCategory(name: "test")
+                try trackerCategoryStore?.addCategory(name: "test2")
+                let tracker1 = Tracker(id: UUID(), name: "Flowers", color: .ypColor5, icon: "🌺", schedule: [2])
+                try addTracker(tracker1, at: "test")
+                let tracker2 = Tracker(id: UUID(), name: "Dog", color: .ypColor10, icon: "🐶", schedule: [0,1,2,3,4,5,6])
+                try addTracker(tracker2, at: "test2")
+            } catch {
+                
+            }
+        }
+    }
+}
+
+extension TrackerService: TrackerServiceProtocol {
+    var numberOfSections: Int {
+        fetchedResultsController.sections?.count ?? 0
+    }
+    
+    func numberOfRowsInSection(_ section: Int) -> Int {
+        fetchedResultsController.sections?[section].numberOfObjects ?? 0
+    }
+    
+    func tracker(at indexPath: IndexPath) -> Tracker {
+        trackerStore?.getTrackerFromCoreData(from: fetchedResultsController.object(at: indexPath)) ?? Tracker(id: UUID(), name: "test", color: .gray, icon: "", schedule: [])
+    }
+    
+    func categoryName(at section: Int) -> String {
+        fetchedResultsController.object(at: IndexPath(item: 0, section: section)).category.name
+    }
+    
+    func addTracker(_ tracker: Tracker, at category: String) throws {
+        if let categoryCoreData = trackerCategoryStore?.getCategoryWithName(category) {
+            try? trackerStore?.addNewTracker(tracker, at: categoryCoreData)
+        }
+    }
+    
+    func deleteTracker(at indexPath: IndexPath) throws {
+    }
+}
+
+extension TrackerService: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        insertedIndexes = IndexSet()
+        deletedIndexes = IndexSet()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.didUpdate(TrackerServiceUpdate(
+            insertedIndexes: insertedIndexes ?? IndexSet(),
+            deletedIndexes: deletedIndexes ?? IndexSet()
+        )
+        )
+        insertedIndexes = nil
+        deletedIndexes = nil
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        switch type {
+        case .delete:
+            if let indexPath = indexPath {
+                deletedIndexes?.insert(indexPath.item)
+            }
+        case .insert:
+            if let indexPath = newIndexPath {
+                insertedIndexes?.insert(indexPath.item)
+            }
+        default:
+            break
+        }
     }
 }

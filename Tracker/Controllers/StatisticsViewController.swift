@@ -7,20 +7,7 @@
 
 import UIKit
 
-final class StatisticsViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        emptyScreenImage.image = UIImage(named: "emptyStatistics")
-        emptyScreenText.text = "Анализировать пока нечего"
-        view.backgroundColor = .ypWhite
-        if let navigationBar = navigationController?.navigationBar {
-            navigationBar.topItem?.title = "Статистика"
-            navigationBar.prefersLargeTitles = true
-            navigationBar.topItem?.largeTitleDisplayMode = .always
-        }
-    }
-    
+class StatisticsViewController: UIViewController {
     private lazy var emptyScreenImage: UIImageView = {
         let emptyScreenImage = UIImageView()
         view.addSubview(emptyScreenImage)
@@ -43,4 +30,24 @@ final class StatisticsViewController: UIViewController {
         emptyScreenText.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         return emptyScreenText
     }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupStatisticsScreen()
+    }
+    
+    private func setupStatisticsScreen() {
+        emptyScreenImage.image = UIImage(named: "EmptyStatistic")
+        emptyScreenText.text = "Анализировать пока нечего"
+        view.backgroundColor = .ypWhite
+        setupNavigationBar()
+    }
+    
+    private func setupNavigationBar() {
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.topItem?.title = "Статистика"
+            navigationBar.prefersLargeTitles = true
+            navigationBar.topItem?.largeTitleDisplayMode = .always
+        }
+    }
 }

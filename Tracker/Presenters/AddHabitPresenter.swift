@@ -8,35 +8,58 @@
 import UIKit
 
 final class AddHabitPresenter: AddHabitPresenterProtocol {
-    var delegate: AddHabitDelegate?
-    var trackerTitle: String?
+    weak var delegate: AddHabitDelegate?
+    var trackerName: String?
     var subtitleForCategory: String = ""
-    var categories: [TrackerCategory]
-    var selectedCategory: TrackerCategory?
-    var view: AddHabitViewControllerProtocol?
+    var selectedCategory: String?
+    var icon: String?
+    var color: UIColor?
     var type: TrackerType
     var schedule: [Int] = []
+
     var isValidForm: Bool {
         switch type {
         case .habit:
-            return selectedCategory != nil && trackerTitle != nil && !schedule.isEmpty
+            return selectedCategory != nil && trackerName != nil && !schedule.isEmpty && icon != nil && color != nil
         case .irregularEvent:
-            return selectedCategory != nil && trackerTitle != nil
+            return selectedCategory != nil && trackerName != nil && icon != nil && color != nil
         }
-        
     }
-    
-    init(type: TrackerType, categories: [TrackerCategory]) {
+
+    var scheduleString: String {
+        if schedule.count == DaysFormatter.weekdays.count {
+            return "Каждый день"
+        } else {
+            return schedule.map { DaysFormatter.shortWeekday(at: $0)}.joined(separator: ", ")
+        }
+    }
+
+    var pageTitle: String {
+        switch type {
+        case .habit:
+            return "Новая привычка"
+        case .irregularEvent:
+            return "Новое нерегулярное событие"
+        }
+    }
+
+    weak var view: AddHabitViewControllerProtocol?
+
+    private var categories: [String]
+
+    init(type: TrackerType, categories: [String]) {
         self.type = type
         self.selectedCategory = categories.first
         self.categories = categories
     }
-    
+
     func createNewTracker() {
-        guard let title = trackerTitle,
-              let selectedCategory
+        guard let name = trackerName,
+              let selectedCategory,
+              let icon,
+              let color
         else { return }
-        let newTracker = Tracker(id: UUID(), title: title, color: .ypColor1, icon: "🌺", schedule: schedule)
+        let newTracker = Tracker(id: UUID(), name: name, color: color, icon: icon, schedule: schedule)
         delegate?.didCreateTracker(newTracker, at: selectedCategory)
     }
 }

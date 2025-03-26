@@ -8,8 +8,8 @@
 import Foundation
 
 final class TimetablePresenter: TimetablePresenterProtocol {
-    var view: TimetableViewControllerProtocol
-    var delegate: TimetableDelegate
+    weak var view: TimetableViewControllerProtocol?
+    weak var delegate: TimetableDelegate?
     var selectedWeekdays: [Int]
     let weekdays = DaysFormatter.weekdays
     
@@ -18,10 +18,9 @@ final class TimetablePresenter: TimetablePresenterProtocol {
         self.delegate = delegate
         self.selectedWeekdays = selected
     }
-
+    
     func done() {
-        delegate.didSelect(weekdays: selectedWeekdays)
+        delegate?.didSelect(weekdays: selectedWeekdays)
         print(selectedWeekdays)
     }
 }
-

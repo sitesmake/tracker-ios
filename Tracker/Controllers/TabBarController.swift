@@ -10,7 +10,6 @@ import UIKit
 final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.viewControllers = [getTrackersViewController(), getStatisticViewController()]
     }
     
@@ -31,4 +30,3 @@ final class TabBarController: UITabBarController {
         return statistic
     }
 }
-

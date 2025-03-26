@@ -8,48 +8,53 @@
 import UIKit
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
-    var delegate: TrackerCollectionViewCellDelegate?
+    weak var delegate: TrackerCollectionViewCellDelegate?
     
-    var daysCounter: Int = 0 {
+    var viewModel: TrackerCellViewModel? {
+        didSet {
+            guard let viewModel else { return }
+            setupViewModel(viewModel: viewModel)
+        }
+    }
+    
+    private var daysCounter: Int = 0 {
         didSet {
             updateCounterLabel()
         }
     }
     
-    var tracker: Tracker? {
+    private var tracker: Tracker? {
         didSet {
-            title.text = tracker?.title
+            name.text = tracker?.name
             icon.text = tracker?.icon
             rectangleView.backgroundColor = tracker?.color
             counterButton.backgroundColor = tracker?.color
         }
     }
     
-    var completedTracker: Bool = false {
+    private var completedTracker: Bool = false {
         didSet {
             updateButtonState()
         }
     }
     
-    var canBeChanged: Bool = false
-    
-    lazy var rectangleView: UIView = {
+    private lazy var rectangleView: UIView = {
         let rectangleView = UIView()
         rectangleView.translatesAutoresizingMaskIntoConstraints = false
         rectangleView.layer.cornerRadius = 16
         return rectangleView
     }()
     
-    lazy var title: UILabel = {
-        let title = UILabel()
-        title.translatesAutoresizingMaskIntoConstraints = false
-        title.textColor = .white
-        title.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        title.numberOfLines = 0
-        return title
+    private lazy var name: UILabel = {
+        let name = UILabel()
+        name.translatesAutoresizingMaskIntoConstraints = false
+        name.textColor = .white
+        name.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        name.numberOfLines = 0
+        return name
     }()
     
-    lazy var iconBackground: UIView = {
+    private lazy var iconBackground: UIView = {
         let iconBackground = UIView()
         iconBackground.translatesAutoresizingMaskIntoConstraints = false
         iconBackground.layer.cornerRadius = 15
@@ -57,21 +62,22 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return iconBackground
     }()
     
-    lazy var icon: UILabel = {
+    private lazy var icon: UILabel = {
         let icon = UILabel()
         icon.translatesAutoresizingMaskIntoConstraints = false
         icon.font = .systemFont(ofSize: 16)
+        
         return icon
     }()
     
-    lazy var days: UILabel = {
+    private lazy var days: UILabel = {
         let days = UILabel()
         days.translatesAutoresizingMaskIntoConstraints = false
         days.font = .systemFont(ofSize: 12, weight: .medium)
         return days
     }()
     
-    lazy var counterButton: UIButton = {
+    private lazy var counterButton: UIButton = {
         let counterButton = UIButton()
         counterButton.translatesAutoresizingMaskIntoConstraints = false
         counterButton.layer.cornerRadius = 20
@@ -87,12 +93,12 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) hasn't implemented")
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func addSubviews() {
         contentView.addSubview(rectangleView)
-        rectangleView.addSubview(title)
+        rectangleView.addSubview(name)
         rectangleView.addSubview(iconBackground)
         iconBackground.addSubview(icon)
         contentView.addSubview(days)
@@ -106,10 +112,10 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             rectangleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             rectangleView.heightAnchor.constraint(equalToConstant: 90),
             
-            title.topAnchor.constraint(greaterThanOrEqualTo: iconBackground.bottomAnchor, constant: 4),
-            title.bottomAnchor.constraint(equalTo: rectangleView.bottomAnchor, constant: -12),
-            title.leadingAnchor.constraint(equalTo: rectangleView.leadingAnchor, constant: 12),
-            title.trailingAnchor.constraint(equalTo: rectangleView.trailingAnchor, constant: -12),
+            name.topAnchor.constraint(greaterThanOrEqualTo: iconBackground.bottomAnchor, constant: 4),
+            name.bottomAnchor.constraint(equalTo: rectangleView.bottomAnchor, constant: -12),
+            name.leadingAnchor.constraint(equalTo: rectangleView.leadingAnchor, constant: 12),
+            name.trailingAnchor.constraint(equalTo: rectangleView.trailingAnchor, constant: -12),
             
             iconBackground.heightAnchor.constraint(equalToConstant: 30),
             iconBackground.widthAnchor.constraint(equalToConstant: 30),
@@ -129,11 +135,33 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         ])
     }
     
+    private func updateButtonState() {
+        switch completedTracker {
+        case true:
+            counterButton.setImage(UIImage(named: "Check"), for: .normal)
+            counterButton.alpha = 0.3
+            counterButton.imageView?.tintColor = .ypWhite
+        case false:
+            counterButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            counterButton.alpha = 1
+            counterButton.imageView?.tintColor = .ypWhite
+        }
+    }
+    
+    private func updateCounterLabel() {
+        let daysLabelForCell = "\(daysCounter) дней"
+        days.text = daysLabelForCell
+    }
+    
+    private func setupViewModel(viewModel: TrackerCellViewModel) {
+        daysCounter = viewModel.daysCounter
+        tracker = viewModel.tracker
+        completedTracker = viewModel.isCompleted
+        counterButton.isEnabled = viewModel.isCompletionEnable
+    }
+    
     @objc
     private func checkForToday() {
-        if (canBeChanged == false) {
-            return
-        }
         if completedTracker {
             daysCounter -= 1
         } else {
@@ -142,22 +170,5 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         completedTracker = !completedTracker
         guard let tracker else { return }
         delegate?.didComplete(completedTracker, tracker: tracker)
-    }
-    
-    private func updateButtonState() {
-        switch completedTracker {
-        case true:
-            counterButton.setImage(UIImage(named: "Check"), for: .normal)
-            counterButton.alpha = 0.3
-        case false:
-            counterButton.setImage(UIImage(systemName: "plus"), for: .normal)
-            counterButton.alpha = 1
-        }
-        counterButton.imageView?.tintColor = .ypWhite
-    }
-    
-    private func updateCounterLabel() {
-        let daysLabelForCell = "\(daysCounter) дней"
-        days.text = daysLabelForCell
     }
 }

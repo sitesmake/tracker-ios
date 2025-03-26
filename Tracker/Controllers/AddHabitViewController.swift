@@ -7,75 +7,43 @@
 
 import UIKit
 
-final class AddHabitViewController: UIViewController, AddHabitViewControllerProtocol, TextFieldCellDelegate, TimetableDelegate {
-    var presenter: AddHabitPresenterProtocol?
+final class AddHabitViewController: UIViewController, AddHabitViewControllerProtocol {
+    enum Constant {
+        static let textFieldCellIdentifier = "TextFieldCell"
+        static let planningCellIdentifier = "PlaningCell"
+        static let iconCellIdentifier = "IconCell"
+        static let colorCellIdentifier = "ColorCell"
+    }
     
     enum Section: Int, CaseIterable {
         case textField
         case planning
+        case icon
+        case color
         
         enum Row {
             case textField
             case category
             case schedule
+            case icon
+            case color
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        hideKeyboardOnTap()
-        view.backgroundColor = .ypWhite
-        addSubViews()
-        tableView.register(TextFieldCell.self, forCellReuseIdentifier: "TextFieldCell")
-        tableView.register(TableViewCell.self, forCellReuseIdentifier: "PlanningCell")
-        if let navigationBar = navigationController?.navigationBar {
-            navigationBar.topItem?.title = "Новая привычка"
-        }
-        cancelButton.setTitle("Отменить", for: .normal)
-        createButton.setTitle("Создать", for: .normal)
-        updateButtonState()
-    }
+    var presenter: AddHabitPresenterProtocol?
     
-    private func addSubViews() {
-        view.addSubview(tableView)
-        view.addSubview(buttonsStackView)
-        
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: buttonsStackView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            buttonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            buttonsStackView.heightAnchor.constraint(equalToConstant: 60),
-        ])
-    }
-    
-    private func rowsForSection(_ type: Section) -> [Section.Row] {
-        switch type {
-        case .textField:
-            return [.textField]
-        case .planning:
-            switch presenter?.type {
-            case .habit:
-                return [.category, .schedule]
-            case .irregularEvent:
-                return [.category]
-            case .none:
-                return []
-            }
-        }
-    }
-    
+    private let icons: [String] = ["❤️", "😱", "😇", "😡", "🥶", "🤔", "🙂", "😻", "🌺", "🐶", "🙌", "🍔", "🥦", "🏓", "🏝️", "😪", "🥇", "🎸"]
+
+    private let colors: [UIColor?] = [.ypColor1, .ypColor2, .ypColor3, .ypColor4, .ypColor5, .ypColor6, .ypColor7, .ypColor8, .ypColor9, .ypColor10, .ypColor11, .ypColor12, .ypColor13, .ypColor14, .ypColor15, .ypColor16, .ypColor17, .ypColor18]
+
     private lazy var tableView: UITableView = {
         let planningTableView = UITableView(frame: .zero, style: .insetGrouped)
         planningTableView.translatesAutoresizingMaskIntoConstraints = false
         planningTableView.separatorStyle = .singleLine
         planningTableView.contentInsetAdjustmentBehavior = .never
         planningTableView.backgroundColor = .ypWhite
-        planningTableView.isScrollEnabled = false
+        planningTableView.isScrollEnabled = true
+        planningTableView.showsVerticalScrollIndicator = false
         planningTableView.dataSource = self
         planningTableView.delegate = self
         planningTableView.allowsSelection = true
@@ -86,7 +54,7 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
         let cancelButton = UIButton()
         cancelButton.layer.cornerRadius = 16
         cancelButton.layer.borderWidth = 1
-        cancelButton.layer.borderColor = UIColor(named: "ypRed")?.cgColor
+        cancelButton.layer.borderColor = UIColor.ypRed.cgColor
         cancelButton.backgroundColor = .ypWhite
         cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         cancelButton.setTitleColor(.ypRed, for: .normal)
@@ -115,19 +83,72 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
         return buttonsStackView
     }()
     
-    @objc
-    private func cancelHabitCreation() {
-        dismiss(animated: true)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupAddHabitScreen()
+        tableView.reloadData()
     }
     
-    @objc
-    private func createHabit() {
-        presenter?.createNewTracker()
-        dismiss(animated: true)
+    private func setupAddHabitScreen() {
+        self.hideKeyboardOnTap()
+        view.backgroundColor = .ypWhite
+        addSubViews()
+        tableView.register(TextFieldCell.self, forCellReuseIdentifier: Constant.textFieldCellIdentifier)
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: Constant.planningCellIdentifier)
+        tableView.register(CollectionCell.self, forCellReuseIdentifier: Constant.iconCellIdentifier)
+        tableView.register(CollectionCell.self, forCellReuseIdentifier: Constant.colorCellIdentifier)
+        
+        setupNavigationBar()
+        
+        cancelButton.setTitle("Отменить", for: .normal)
+        createButton.setTitle("Создать", for: .normal)
+        updateButtonState()
+    }
+    
+    private func setupNavigationBar() {
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.topItem?.title = presenter?.pageTitle
+        }
+    }
+    
+    private func addSubViews() {
+        view.addSubview(tableView)
+        view.addSubview(buttonsStackView)
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: buttonsStackView.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            buttonsStackView.heightAnchor.constraint(equalToConstant: 60),
+        ])
+    }
+    
+    private func rowsForSection(_ type: Section) -> [Section.Row] {
+        switch type {
+        case .textField:
+            return [.textField]
+        case .planning:
+            switch presenter?.type {
+            case .habit:
+                return [.category, .schedule]
+            case .irregularEvent:
+                return [.category]
+            case .none:
+                return []
+            }
+        case .icon:
+            return [.icon]
+        case .color:
+            return [.color]
+        }
     }
     
     private func textFieldCell(at indexPath: IndexPath, placeholder: String) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldCell") as? TextFieldCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.textFieldCellIdentifier) as? TextFieldCell else {
             return UITableViewCell()
         }
         cell.placeholder = placeholder
@@ -136,10 +157,24 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
     }
     
     private func planningCell(at indexPath: IndexPath, title: String, subtitle: String?) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "PlanningCell") as? TableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.planningCellIdentifier) as? TableViewCell else { return UITableViewCell() }
         cell.textLabel?.text = title
         cell.detailTextLabel?.text = subtitle
         cell.accessoryType = .disclosureIndicator
+        return cell
+    }
+    
+    private func iconCell(at indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.iconCellIdentifier) as? CollectionCell else { return UITableViewCell() }
+        cell.delegate = self
+        cell.type = .icon(items: icons)
+        return cell
+    }
+    
+    private func colorCell(at indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.colorCellIdentifier) as? CollectionCell else { return UITableViewCell() }
+        cell.delegate = self
+        cell.type = .color(items: colors)
         return cell
     }
     
@@ -163,20 +198,49 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
         createButton.backgroundColor = createButton.isEnabled ? .ypBlack : .ypGray
     }
     
+    @objc
+    private func cancelHabitCreation() {
+        dismiss(animated: true)
+    }
+    
+    @objc
+    private func createHabit() {
+        presenter?.createNewTracker()
+        dismiss(animated: true)
+    }
+}
+
+extension AddHabitViewController: TimetableDelegate {
     func didSelect(weekdays: [Int]) {
         presenter?.schedule = weekdays
         updateButtonState()
-        tableView.reloadData()
+        let section = Section.planning
+        if let row = rowsForSection(section).firstIndex(of: Section.Row.schedule) {
+            tableView.reloadRows(at: [IndexPath(row: row, section: section.rawValue)], with: .none)
+        }
+    }
+}
+
+extension AddHabitViewController: TextFieldCellDelegate {
+    func didTextChange(text: String?) {
+        presenter?.trackerName = text
+        updateButtonState()
+    }
+}
+
+extension AddHabitViewController: CollectionCellDelegate {
+    func didIconSet(icon: String?) {
+        presenter?.icon = icon
+        updateButtonState()
     }
     
-    func didTextChange(text: String?) {
-        presenter?.trackerTitle = text
+    func didColorSet(color: UIColor?) {
+        presenter?.color = color
         updateButtonState()
     }
 }
 
 extension AddHabitViewController: UITableViewDataSource {
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         Section.allCases.count
     }
@@ -193,9 +257,13 @@ extension AddHabitViewController: UITableViewDataSource {
         case .textField:
             return textFieldCell(at: indexPath, placeholder: "Введите название трекера")
         case .category:
-            return planningCell(at: indexPath, title: "Категория", subtitle: presenter?.selectedCategory?.title)
+            return planningCell(at: indexPath, title: "Категория", subtitle: presenter?.selectedCategory)
         case .schedule:
-            return planningCell(at: indexPath, title: "Расписание", subtitle: presenter?.schedule.map{ DaysFormatter.shortWeekday(at: $0)}.joined(separator: ", "))
+            return planningCell(at: indexPath, title: "Расписание", subtitle: presenter?.scheduleString)
+        case .icon:
+            return iconCell(at: indexPath)
+        case .color:
+            return colorCell(at: indexPath)
         }
     }
 }
@@ -215,7 +283,13 @@ extension AddHabitViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        75
+        guard let section = Section(rawValue: indexPath.section) else { return 0 }
+        switch rowsForSection(section)[indexPath.row] {
+            
+        case .textField, .category, .schedule:
+            return 75
+        case .icon, .color:
+            return UITableView.automaticDimension
+        }
     }
 }
-
