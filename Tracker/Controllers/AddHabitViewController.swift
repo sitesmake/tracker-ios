@@ -8,7 +8,7 @@
 import UIKit
 
 final class AddHabitViewController: UIViewController, AddHabitViewControllerProtocol {
-    enum Constant {
+    enum Constants {
         static let textFieldCellIdentifier = "TextFieldCell"
         static let planningCellIdentifier = "PlaningCell"
         static let iconCellIdentifier = "IconCell"
@@ -93,10 +93,10 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
         self.hideKeyboardOnTap()
         view.backgroundColor = .ypWhite
         addSubViews()
-        tableView.register(TextFieldCell.self, forCellReuseIdentifier: Constant.textFieldCellIdentifier)
-        tableView.register(TableViewCell.self, forCellReuseIdentifier: Constant.planningCellIdentifier)
-        tableView.register(CollectionCell.self, forCellReuseIdentifier: Constant.iconCellIdentifier)
-        tableView.register(CollectionCell.self, forCellReuseIdentifier: Constant.colorCellIdentifier)
+        tableView.register(TextFieldCell.self, forCellReuseIdentifier: Constants.textFieldCellIdentifier)
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: Constants.planningCellIdentifier)
+        tableView.register(CollectionCell.self, forCellReuseIdentifier: Constants.iconCellIdentifier)
+        tableView.register(CollectionCell.self, forCellReuseIdentifier: Constants.colorCellIdentifier)
         
         setupNavigationBar()
         
@@ -148,7 +148,7 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
     }
     
     private func textFieldCell(at indexPath: IndexPath, placeholder: String) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.textFieldCellIdentifier) as? TextFieldCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.textFieldCellIdentifier) as? TextFieldCell else {
             return UITableViewCell()
         }
         cell.placeholder = placeholder
@@ -157,7 +157,7 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
     }
     
     private func planningCell(at indexPath: IndexPath, title: String, subtitle: String?) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.planningCellIdentifier) as? TableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.planningCellIdentifier) as? TableViewCell else { return UITableViewCell() }
         cell.textLabel?.text = title
         cell.detailTextLabel?.text = subtitle
         cell.accessoryType = .disclosureIndicator
@@ -165,14 +165,14 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
     }
     
     private func iconCell(at indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.iconCellIdentifier) as? CollectionCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.iconCellIdentifier) as? CollectionCell else { return UITableViewCell() }
         cell.delegate = self
         cell.type = .icon(items: icons)
         return cell
     }
     
     private func colorCell(at indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.colorCellIdentifier) as? CollectionCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.colorCellIdentifier) as? CollectionCell else { return UITableViewCell() }
         cell.delegate = self
         cell.type = .color(items: colors)
         return cell

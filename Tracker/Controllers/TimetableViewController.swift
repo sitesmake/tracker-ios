@@ -8,7 +8,7 @@
 import UIKit
 
 final class TimetableViewController: UIViewController, TimetableViewControllerProtocol {
-    enum Constant {
+    enum Constants {
         static let timetableCellIdentifier = "TimetableCell"
     }
     
@@ -24,7 +24,7 @@ final class TimetableViewController: UIViewController, TimetableViewControllerPr
         timetable.delegate = self
         timetable.alwaysBounceVertical = false
         timetable.allowsSelection = false
-        timetable.register(TableViewCell.self, forCellReuseIdentifier: Constant.timetableCellIdentifier)
+        timetable.register(TableViewCell.self, forCellReuseIdentifier: Constants.timetableCellIdentifier)
         return timetable
     }()
     
@@ -100,7 +100,7 @@ extension TimetableViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constant.timetableCellIdentifier) as? TableViewCell,
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.timetableCellIdentifier) as? TableViewCell,
               let presenter
         else { return UITableViewCell() }
         

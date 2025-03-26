@@ -10,14 +10,14 @@ import UIKit
 final class TrackerTypeViewController: UIViewController, TrackerTypeViewControllerProtocol {
     var presenter: TrackerTypePresenterProtocol?
     
-    private lazy var AddHabitButton: UIButton = {
-        let AddHabitButton = UIButton()
-        AddHabitButton.layer.cornerRadius = 16
-        AddHabitButton.backgroundColor = .ypBlack
-        AddHabitButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        AddHabitButton.setTitleColor(.ypWhite, for: .normal)
-        AddHabitButton.addTarget(self, action: #selector(pushAddHabitViewController), for: .touchUpInside)
-        return AddHabitButton
+    private lazy var addHabitButton: UIButton = {
+        let addHabitButton = UIButton()
+        addHabitButton.layer.cornerRadius = 16
+        addHabitButton.backgroundColor = .ypBlack
+        addHabitButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        addHabitButton.setTitleColor(.ypWhite, for: .normal)
+        addHabitButton.addTarget(self, action: #selector(pushAddHabitViewController), for: .touchUpInside)
+        return addHabitButton
     }()
     
     private lazy var newIrregularEventButton: UIButton = {
@@ -33,7 +33,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
     private lazy var buttonsStackView: UIStackView = {
         let buttonsStackView = UIStackView()
         buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
-        buttonsStackView.addArrangedSubview(AddHabitButton)
+        buttonsStackView.addArrangedSubview(addHabitButton)
         buttonsStackView.addArrangedSubview(newIrregularEventButton)
         buttonsStackView.axis = .vertical
         buttonsStackView.spacing = 16
@@ -50,7 +50,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
         view.backgroundColor = .ypWhite
         setupNavigationBar()
         addSubViews()
-        AddHabitButton.setTitle("Привычка", for: .normal)
+        addHabitButton.setTitle("Привычка", for: .normal)
         newIrregularEventButton.setTitle("Нерегулярное событие", for: .normal)
     }
     
@@ -61,7 +61,7 @@ final class TrackerTypeViewController: UIViewController, TrackerTypeViewControll
     }
     
     private func addSubViews() {
-        view.addSubview(AddHabitButton)
+        view.addSubview(addHabitButton)
         view.addSubview(newIrregularEventButton)
         view.addSubview(buttonsStackView)
         NSLayoutConstraint.activate([
