@@ -12,7 +12,7 @@ final class TrackerService: NSObject {
 
     override init() {
         super.init()
-        let context = CoreDataStack.shared.viewContext // Используем viewContext из CoreDataStack
+        let context = CoreDataStack.shared.viewContext
         self.trackerStore = TrackerStore(context: context)
         self.trackerCategoryStore = TrackerCategoryStore(context: context)
         self.trackerRecordStore = TrackerRecordStore(context: context)
@@ -20,8 +20,6 @@ final class TrackerService: NSObject {
     }
 
     func updatePredicate(search: String, date: Date) {
-        // Update search and date predicates based on user input (search and date)
-        // In this case we no longer need to rely on `fetchedResultsController`
     }
 
     func getAllCategories() -> [String] {
@@ -63,7 +61,6 @@ final class TrackerService: NSObject {
 
 extension TrackerService: TrackerServiceProtocol {
     var numberOfSections: Int {
-        // We will handle this with tracker categories, based on category count
         return trackerCategoryStore?.getCategoryNames().count ?? 0
     }
 
@@ -98,6 +95,6 @@ extension TrackerService: TrackerServiceProtocol {
     }
 
     func deleteTracker(at indexPath: IndexPath) throws {
-        // Implement delete tracker functionality if needed
+        // Implement delete tracker functionality when needed
     }
 }
