@@ -30,11 +30,14 @@ final class AddHabitViewController: UIViewController, AddHabitViewControllerProt
         }
     }
     
-    var presenter: AddHabitPresenterProtocol?
+    internal var presenter: AddHabitPresenterProtocol?
     
-    private let icons: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
+    private let icons: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶",
+                                   "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
 
-    private let colors: [UIColor?] = [.ypColor1, .ypColor2, .ypColor3, .ypColor4, .ypColor5, .ypColor6, .ypColor7, .ypColor8, .ypColor9, .ypColor10, .ypColor11, .ypColor12, .ypColor13, .ypColor14, .ypColor15, .ypColor16, .ypColor17, .ypColor18]
+    private let colors: [UIColor?] = [.ypColor1, .ypColor2, .ypColor3, .ypColor4, .ypColor5, .ypColor6,
+                                      .ypColor7, .ypColor8, .ypColor9, .ypColor10, .ypColor11, .ypColor12,
+                                      .ypColor13, .ypColor14, .ypColor15, .ypColor16, .ypColor17, .ypColor18]
 
     private lazy var tableView: UITableView = {
         let planningTableView = UITableView(frame: .zero, style: .insetGrouped)
