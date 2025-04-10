@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		110F45A22DA8784D00EA4BE6 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110F45A12DA8784D00EA4BE6 /* CoreDataStack.swift */; };
 		1115298E2D7DB012000D5521 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1115298D2D7DB012000D5521 /* AppDelegate.swift */; };
 		111529902D7DB012000D5521 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1115298F2D7DB012000D5521 /* SceneDelegate.swift */; };
 		111529922D7DB012000D5521 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111529912D7DB012000D5521 /* ViewController.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		110F45A12DA8784D00EA4BE6 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		1115298A2D7DB012000D5521 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1115298D2D7DB012000D5521 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1115298F2D7DB012000D5521 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				11F841EE2D9486B200A7737D /* TrackerRecordStore.swift */,
 				11F841F02D9486D000A7737D /* Model.xcdatamodeld */,
 				11F841F32D9486EF00A7737D /* NSManagedObjectSubclass */,
+				110F45A12DA8784D00EA4BE6 /* CoreDataStack.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -345,6 +348,7 @@
 				113295CC2D807953006B6A4C /* TrackerTypePresenter.swift in Sources */,
 				113295CA2D807915006B6A4C /* TrackerTypeViewController.swift in Sources */,
 				11F841E42D94855800A7737D /* CollectionCell.swift in Sources */,
+				110F45A22DA8784D00EA4BE6 /* CoreDataStack.swift in Sources */,
 				113295D22D807E0F006B6A4C /* TrackerType.swift in Sources */,
 				111529A82D7DB2CC000D5521 /* TrackersPresenter.swift in Sources */,
 				11F842052D94887500A7737D /* TrackerServiceUpdate.swift in Sources */,

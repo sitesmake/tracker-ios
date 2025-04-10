@@ -9,27 +9,27 @@ import UIKit
 
 //import Foundation
 
+// Протокол для TrackerStore
 protocol TrackerStoreProtocol {
-    func addNewTracker(_ tracker: Tracker, at category: TrackerCategoryCoreData) throws
     func getTrackerFromCoreData(from trackerCoreData: TrackerCoreData) -> Tracker
+    func addNewTracker(_ tracker: Tracker, at category: TrackerCategoryCoreData) throws
 }
 
-//import Foundation
-
+// Протокол для TrackerCategoryStore
 protocol TrackerCategoryStoreProtocol {
     func getCategoryNames() -> [String]
     func getCategoryWithName(_ name: String) -> TrackerCategoryCoreData?
     func addCategory(name: String) throws
 }
 
-//import Foundation
-
+// Протокол для TrackerRecordStore
 protocol TrackerRecordStoreProtocol {
     func getTrackerRecordFromCoreData(tracker: Tracker, date: Date) -> TrackerRecord?
     func getTrackerRecordsNumber(tracker: Tracker) -> Int
     func addNewTrackerRecord(_ tracker: Tracker, date: Date) throws
     func deleteTrackerRecord(_ tracker: Tracker, date: Date) throws
 }
+
 
 
 

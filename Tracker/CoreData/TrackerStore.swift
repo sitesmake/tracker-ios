@@ -32,4 +32,18 @@ class TrackerStore: TrackerStoreProtocol {
         trackerCoreData.icon = tracker.icon
         trackerCoreData.schedule = scheduleConverter.convertToString(array: tracker.schedule)
     }
+
+    func getTrackersInCategory(_ category: String) -> [Tracker] {
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        let categoryPredicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCoreData.category.name), category)
+        request.predicate = categoryPredicate
+
+        do {
+            let results = try context.fetch(request)
+            return results.map { getTrackerFromCoreData(from: $0) }
+        } catch {
+            return []
+        }
+    }
+
 }
