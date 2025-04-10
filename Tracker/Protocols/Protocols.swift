@@ -7,6 +7,35 @@
 
 import UIKit
 
+//import Foundation
+
+protocol TrackerStoreProtocol {
+    func addNewTracker(_ tracker: Tracker, at category: TrackerCategoryCoreData) throws
+    func getTrackerFromCoreData(from trackerCoreData: TrackerCoreData) -> Tracker
+}
+
+//import Foundation
+
+protocol TrackerCategoryStoreProtocol {
+    func getCategoryNames() -> [String]
+    func getCategoryWithName(_ name: String) -> TrackerCategoryCoreData?
+    func addCategory(name: String) throws
+}
+
+//import Foundation
+
+protocol TrackerRecordStoreProtocol {
+    func getTrackerRecordFromCoreData(tracker: Tracker, date: Date) -> TrackerRecord?
+    func getTrackerRecordsNumber(tracker: Tracker) -> Int
+    func addNewTrackerRecord(_ tracker: Tracker, date: Date) throws
+    func deleteTrackerRecord(_ tracker: Tracker, date: Date) throws
+}
+
+
+
+
+
+
 protocol TrackerServiceProtocol {
     var numberOfSections: Int { get }
     func numberOfRowsInSection(_ section: Int) -> Int
