@@ -594,7 +594,7 @@
 			);
 			currentVersion = 11F841F12D9486D000A7737D /* Model.xcdatamodel */;
 			name = Model.xcdatamodeld;
-			path = "/Users/alexander/Sites/Tracker-ios/Tracker/CoreData/Model.xcdatamodeld";
+			path = "Model.xcdatamodeld";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
