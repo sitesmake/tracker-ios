@@ -1,7 +1,7 @@
 import Foundation
 import CoreData
 
-class TrackerStore: TrackerStoreProtocol {
+final class TrackerStore: TrackerStoreProtocol {
     private let colorMarshaling = ColorMarshaling()
     private let scheduleConverter = ScheduleConverter()
     private let context: NSManagedObjectContext

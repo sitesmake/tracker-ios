@@ -1,7 +1,7 @@
 import Foundation
 import CoreData
 
-class TrackerCategoryStore: TrackerCategoryStoreProtocol {
+final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
     private let context: NSManagedObjectContext
 
     init(context: NSManagedObjectContext) {
