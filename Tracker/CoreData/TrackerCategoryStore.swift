@@ -1,31 +1,21 @@
 import Foundation
-import CoreData
 
 final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
-    private let context: NSManagedObjectContext
+    private let categoryDataSource: TrackerCategoryDataSourceProtocol
 
-    init(context: NSManagedObjectContext) {
-        self.context = context
+    init(categoryDataSource: TrackerCategoryDataSourceProtocol) {
+        self.categoryDataSource = categoryDataSource
     }
 
     func getCategoryNames() -> [String] {
-        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        request.propertiesToFetch = ["name"]
-        let categoryNames = try? context.fetch(request)
-        return categoryNames?.map { $0.name } ?? []
+        return categoryDataSource.getCategoryNames()
     }
 
-    func getCategoryWithName(_ name: String) -> TrackerCategoryCoreData? {
-        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        let namePredicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.name), name)
-        request.predicate = namePredicate
-        return try? context.fetch(request).first
+    func getCategoryWithName(_ name: String) -> TrackerCategory? {
+        return categoryDataSource.getCategoryWithName(name)
     }
 
     func addCategory(name: String) throws {
-        let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
-        trackerCategoryCoreData.name = name
-        trackerCategoryCoreData.trackers = []
-        try context.save()
+        try categoryDataSource.addCategory(name: name)
     }
 }

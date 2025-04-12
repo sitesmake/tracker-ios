@@ -8,22 +8,41 @@
 import UIKit
 
 protocol TrackerStoreProtocol {
-    func getTrackerFromCoreData(from trackerCoreData: TrackerCoreData) -> Tracker
-    func addNewTracker(_ tracker: Tracker, at category: TrackerCategoryCoreData) throws
+    func getTrackersInCategory(_ category: TrackerCategory) -> [Tracker]
+    func addNewTracker(_ tracker: Tracker, at category: TrackerCategory) throws
 }
 
 protocol TrackerCategoryStoreProtocol {
     func getCategoryNames() -> [String]
-    func getCategoryWithName(_ name: String) -> TrackerCategoryCoreData?
+    func getCategoryWithName(_ name: String) -> TrackerCategory?
     func addCategory(name: String) throws
 }
 
 protocol TrackerRecordStoreProtocol {
-    func getTrackerRecordFromCoreData(tracker: Tracker, date: Date) -> TrackerRecord?
+    func getTrackerRecord(tracker: Tracker, date: Date) -> TrackerRecord?
     func getTrackerRecordsNumber(tracker: Tracker) -> Int
     func addNewTrackerRecord(_ tracker: Tracker, date: Date) throws
     func deleteTrackerRecord(_ tracker: Tracker, date: Date) throws
 }
+
+protocol TrackerDataSourceProtocol {
+    func getTrackersInCategory(_ category: TrackerCategory) -> [Tracker]
+    func addNewTracker(_ tracker: Tracker, at category: TrackerCategory) throws
+}
+
+protocol TrackerCategoryDataSourceProtocol {
+    func getCategoryNames() -> [String]
+    func getCategoryWithName(_ name: String) -> TrackerCategory?
+    func addCategory(name: String) throws
+}
+
+protocol TrackerRecordDataSourceProtocol {
+    func getTrackerRecord(tracker: Tracker, date: Date) -> TrackerRecord?
+    func getTrackerRecordsNumber(tracker: Tracker) -> Int
+    func addNewTrackerRecord(_ tracker: Tracker, date: Date) throws
+    func deleteTrackerRecord(_ tracker: Tracker, date: Date) throws
+}
+
 
 protocol TrackerServiceProtocol {
     var numberOfSections: Int { get }
