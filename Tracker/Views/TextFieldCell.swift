@@ -7,13 +7,8 @@
 
 import UIKit
 
-protocol TextFieldCellDelegate {
-    func didTextChange(text: String?)
-}
-
 final class TextFieldCell: UITableViewCell {
-    
-    var delegate: TextFieldCellDelegate?
+    weak var delegate: TextFieldCellDelegate?
     
     var placeholder: String? {
         get { textField.placeholder }
@@ -60,13 +55,12 @@ final class TextFieldCell: UITableViewCell {
 }
 
 extension TextFieldCell: UITextFieldDelegate {
-    
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        endEditing(true)
+        self.endEditing(true)
         return true
     }
     

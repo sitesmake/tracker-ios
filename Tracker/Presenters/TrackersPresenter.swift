@@ -8,46 +8,99 @@
 import UIKit
 
 final class TrackersPresenter: TrackersPresenterProtocol {
-    func addTracker(_ tracker: Tracker, at category: TrackerCategory) {
-        service.addTracker(tracker, at: category)
-        setupCategories()
-    }
-    
-    private let service = TrackerService()
-    weak var view: TrackersViewControllerProtocol?
-    var categories: [TrackerCategory] = []
-    var currentDate: Date = Calendar.current.startOfDay(for: Date()) {
-        didSet {
-            setupCategories()
-        }
-    }
     var search: String = "" {
         didSet {
-            setupCategories()
+            updateCategories()
+        }
+    }
+    var currentDate: Date = Date() {
+        didSet {
+            updateCategories()
         }
     }
     
-    func setupCategories() {
-        categories = service.getCategoriesFor(date: currentDate, search: search)
+    var categories: [String] {
+        service.getAllCategories()
+    }
+    
+    var isEmpty: Bool {
+        service.numberOfSections == 0
+    }
+    
+    weak var view: TrackersViewControllerProtocol?
+    
+    private let service = TrackerService()
+    
+    init() {
+        service.delegate = self
+    }
+    
+    func addTracker(_ tracker: Tracker, at category: String) {
+        do {
+            try service.addTracker(tracker, at: category)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func updateCategories() {
+        service.updatePredicate(search: search, date: currentDate)
     }
     
     func completeTracker(_ complete: Bool, tracker: Tracker) {
-        if complete {
-            service.changeCompletedTrackers(tracker: tracker, date: currentDate, complete: complete)
-        } else {
-            service.changeCompletedTrackers(tracker: tracker, date: currentDate, complete: complete)
+        do {
+            if complete {
+                try service.addToCompletedTrackers(tracker: tracker, date: currentDate)
+            } else {
+                try service.removeFromCompletedTrackers(tracker: tracker, date: currentDate)
+            }
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
     func isCompletedTracker(_ tracker: Tracker) -> Bool {
-        service.completedTrackers.first(where: { $0.id == tracker.id && $0.date == currentDate }) != nil
+        guard let completedTracker = service.getTrackerRecord(tracker: tracker, date: currentDate) else { return false }
+        guard let currentDate = currentDate.onlyDate else { return false }
+        if (completedTracker.id == tracker.id && completedTracker.date == currentDate ) {
+            return true
+        } else {
+            print("Error in isCompletedTracker")
+            return false
+        }
     }
     
     func countRecordsTracker(_ tracker: Tracker) -> Int {
-        service.completedTrackers.filter { $0.id == tracker.id }.count
+        service.getTrackersNumber(tracker: tracker)
     }
     
-    func canBeChanged() -> Bool {
-        currentDate <= Calendar.current.startOfDay(for: Date())
+    func titleInSection(section: Int) -> String {
+        service.categoryName(at: section)
+    }
+    
+    func numberOfSections() -> Int? {
+        view?.setupEmptyScreen()
+        return service.numberOfSections
+    }
+    
+    func numberOfItemsInSection(section: Int) -> Int {
+        service.numberOfRowsInSection(section)
+    }
+    
+    func trackerViewModel(at indexPath: IndexPath) -> TrackerCellViewModel {
+        let tracker = service.tracker(at: indexPath)
+        return TrackerCellViewModel(tracker: tracker, isCompleted: isCompletedTracker(tracker), daysCounter: countRecordsTracker(tracker), isCompletionEnable: currentDate <= Date())
+    }
+}
+
+extension TrackersPresenter: TrackerServiceDelegate {
+    func didUpdate(_ update: TrackerServiceUpdate) {
+        guard let view else { return }
+        view.trackersCollectionView.performBatchUpdates {
+            let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
+            let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
+            view.trackersCollectionView.insertItems(at: insertedIndexPaths)
+            view.trackersCollectionView.deleteItems(at: deletedIndexPaths)
+        }
     }
 }

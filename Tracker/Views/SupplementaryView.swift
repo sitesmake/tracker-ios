@@ -14,7 +14,7 @@ final class SupplementaryView: UICollectionReusableView {
         super.init(frame: frame)
         
         addSubview(title)
-        title.font = .systemFont(ofSize: 18, weight: .bold)
+        title.font = .systemFont(ofSize: 19, weight: .bold)
         title.textColor = .ypBlack
         title.translatesAutoresizingMaskIntoConstraints = false
         
@@ -30,4 +30,3 @@ final class SupplementaryView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-

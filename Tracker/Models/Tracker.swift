@@ -9,9 +9,8 @@ import UIKit
 
 struct Tracker {
     let id: UUID
-    let title: String
+    let name: String
     let color: UIColor
     let icon: String
     let schedule: [Int]
 }
-

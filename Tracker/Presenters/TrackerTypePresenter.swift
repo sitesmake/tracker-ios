@@ -8,9 +8,9 @@
 import UIKit
 
 final class TrackerTypePresenter: TrackerTypePresenterProtocol {
-    var view: TrackerTypeViewControllerProtocol?
-    var delegate: TrackerTypeDelegate?
-    
+    weak var delegate: TrackerTypeDelegate?
+    weak var view: TrackerTypeViewControllerProtocol?
+
     func selectType(_ type: TrackerType) {
         delegate?.didSelectType(type)
     }

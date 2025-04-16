@@ -1,61 +1,58 @@
-//
-//  TrackerService.swift
-//  Tracker
-//
-//  Created by alexander on 11.03.2025.
-//
-
-import Foundation
-
 final class TrackerService: TrackerServiceProtocol {
-    var categories: [TrackerCategory] = []
-    var visibleCategories: [TrackerCategory] = []
-    var completedTrackers: Set<TrackerRecord> = []
+    private let trackerStore: TrackerStoreProtocol
+    private let categoryStore: TrackerCategoryStoreProtocol
+    private let recordStore: TrackerRecordStoreProtocol
 
-    init() {
-        let tracker = Tracker(id: UUID(), title: "Демо трекер 1", color: .ypColor1, icon: "🌺", schedule: [0,1,2,3,4,5,6])
-        let category = TrackerCategory(title: "Демо категория 1", trackers: [tracker])
-        categories.append(category)
+    init(trackerStore: TrackerStoreProtocol, categoryStore: TrackerCategoryStoreProtocol, recordStore: TrackerRecordStoreProtocol) {
+        self.trackerStore = trackerStore
+        self.categoryStore = categoryStore
+        self.recordStore = recordStore
     }
 
-    func addTracker(_ tracker: Tracker, at category: TrackerCategory) {
-        var trackers = category.trackers
-        trackers.append(tracker)
-        let newCategory = TrackerCategory(title: category.title, trackers: trackers)
-        var categories = self.categories
-        if let index = categories.firstIndex(where: { $0.title == category.title } ) {
-            categories[index] = newCategory
-        } else {
-            categories.append(newCategory)
+    var numberOfSections: Int {
+        return categoryStore.getCategoryNames().count
+    }
+
+    func numberOfRowsInSection(_ section: Int) -> Int {
+        let categoryNames = categoryStore.getCategoryNames()
+        let categoryName = categoryNames[section]
+        guard let category = categoryStore.getCategoryWithName(categoryName) else { return 0 }
+        return trackerStore.getTrackersInCategory(category).count
+    }
+
+    func tracker(at indexPath: IndexPath) -> Tracker {
+        let categoryNames = categoryStore.getCategoryNames()
+        let categoryName = categoryNames[indexPath.section]
+        guard let category = categoryStore.getCategoryWithName(categoryName) else { fatalError("Category not found") }
+        let trackers = trackerStore.getTrackersInCategory(category)
+        return trackers[indexPath.row]
+    }
+
+    func categoryName(at section: Int) -> String {
+        let categoryNames = categoryStore.getCategoryNames()
+        return categoryNames[section]
+    }
+
+    func addTracker(_ tracker: Tracker, at category: String) throws {
+        guard let categoryData = categoryStore.getCategoryWithName(category) else {
+            throw TrackerServiceError.categoryNotFound
         }
-        self.categories = categories
+        try trackerStore.addNewTracker(tracker, at: categoryData)
     }
 
-    func getCategoriesFor(date: Date, search: String) -> [TrackerCategory] {
-        let weekday = Calendar.current.component(.weekday, from: date) - 1
+    func deleteTracker(at indexPath: IndexPath) throws {
+        let categoryNames = categoryStore.getCategoryNames()
+        let categoryName = categoryNames[indexPath.section]
+        guard let category = categoryStore.getCategoryWithName(categoryName) else { return }
 
-        var result: [TrackerCategory] = []
+        let trackers = trackerStore.getTrackersInCategory(category)
+        let trackerToDelete = trackers[indexPath.row]
 
-        for category in categories {
-            let trackers = search.isEmpty ? category.trackers.filter({ $0.schedule.contains(weekday) || ($0.schedule == [] && date == Calendar.current.startOfDay(for: Date())) }) : category.trackers.filter({ ($0.schedule.contains(weekday) || ($0.schedule == [] && date == Calendar.current.startOfDay(for: Date()))) && $0.title.contains(search) })
-            if !trackers.isEmpty {
-                let newCategory = TrackerCategory(title: category.title, trackers: trackers)
-                result.append(newCategory)
-            }
-        }
-
-        return result
+        // Deleting tracker involves deleting associated records too
+        try recordStore.deleteTrackerRecord(trackerToDelete, date: Date())
     }
+}
 
-    func changeCompletedTrackers(tracker: Tracker, date: Date, complete: Bool) {
-        var completedTrackers = self.completedTrackers
-        if complete {
-            let trackerToRecord = TrackerRecord(id: tracker.id, date: date)
-            completedTrackers.insert(trackerToRecord)
-        } else {
-            let trackerToRemove = TrackerRecord(id: tracker.id, date: date)
-            completedTrackers.remove(trackerToRemove)
-        }
-        self.completedTrackers = completedTrackers
-    }
+enum TrackerServiceError: Error {
+    case categoryNotFound
 }
